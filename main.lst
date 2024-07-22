@@ -1,0 +1,933 @@
+   1               		.file	"main.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               		.section	.rodata.str1.1,"aMS",@progbits,1
+  11               	.LC0:
+  12 0000 2000      		.string	" "
+  13               	.LC1:
+  14 0002 5345 5441 		.string	"SETA"
+  14      00
+  15               	.LC2:
+  16 0007 5345 5442 		.string	"SETB"
+  16      00
+  17               	.LC3:
+  18 000c 4D4F 5645 		.string	"MOVE1"
+  18      3100 
+  19               	.LC4:
+  20 0012 4D4F 5645 		.string	"MOVE2"
+  20      3200 
+  21               	.LC5:
+  22 0018 2564 00   		.string	"%d"
+  23               	.LC6:
+  24 001b 5255 4E00 		.string	"RUN"
+  25               	.LC7:
+  26 001f 4E69 6570 		.string	"Niepoprawne polecenie."
+  26      6F70 7261 
+  26      776E 6520 
+  26      706F 6C65 
+  26      6365 6E69 
+  27               	.LC8:
+  28 0036 613D 2530 		.string	"a=%02d b=%02d       "
+  28      3264 2062 
+  28      3D25 3032 
+  28      6420 2020 
+  28      2020 2020 
+  29               		.text
+  30               	.global	__vector_13
+  32               	__vector_13:
+  33               	.LFB7:
+  34               		.file 1 "main.c"
+   1:main.c        **** #include <avr/io.h>
+   2:main.c        **** #include <util/delay.h>
+   3:main.c        **** #include "USART.h"
+   4:main.c        **** #include <string.h>
+   5:main.c        **** #include "lcd.h"
+   6:main.c        **** #include "robot.h"
+   7:main.c        **** 
+   8:main.c        **** 
+   9:main.c        **** FILE lcd_stream = FDEV_SETUP_STREAM(lcd_putc, NULL, _FDEV_SETUP_WRITE);
+  10:main.c        **** 
+  11:main.c        **** FILE u_stream = FDEV_SETUP_STREAM(u_putc, NULL, _FDEV_SETUP_WRITE);
+  12:main.c        **** int i = 0;
+  13:main.c        **** volatile int deg;
+  14:main.c        **** uint8_t bufor[12];
+  15:main.c        **** 
+  16:main.c        **** 
+  17:main.c        **** //parametry elipsy
+  18:main.c        **** 
+  19:main.c        **** volatile uint8_t a = 2; //cm
+  20:main.c        **** volatile uint8_t b = 3; //cm
+  21:main.c        **** 
+  22:main.c        **** volatile int run = 0;
+  23:main.c        **** 
+  24:main.c        **** ISR(USART_RXC_vect) {
+  35               		.loc 1 24 0
+  36               		.cfi_startproc
+  37 0000 1F92      		push r1
+  38               	.LCFI0:
+  39               		.cfi_def_cfa_offset 3
+  40               		.cfi_offset 1, -2
+  41 0002 0F92      		push r0
+  42               	.LCFI1:
+  43               		.cfi_def_cfa_offset 4
+  44               		.cfi_offset 0, -3
+  45 0004 0FB6      		in r0,__SREG__
+  46 0006 0F92      		push r0
+  47 0008 1124      		clr __zero_reg__
+  48 000a EF92      		push r14
+  49               	.LCFI2:
+  50               		.cfi_def_cfa_offset 5
+  51               		.cfi_offset 14, -4
+  52 000c FF92      		push r15
+  53               	.LCFI3:
+  54               		.cfi_def_cfa_offset 6
+  55               		.cfi_offset 15, -5
+  56 000e 0F93      		push r16
+  57               	.LCFI4:
+  58               		.cfi_def_cfa_offset 7
+  59               		.cfi_offset 16, -6
+  60 0010 1F93      		push r17
+  61               	.LCFI5:
+  62               		.cfi_def_cfa_offset 8
+  63               		.cfi_offset 17, -7
+  64 0012 2F93      		push r18
+  65               	.LCFI6:
+  66               		.cfi_def_cfa_offset 9
+  67               		.cfi_offset 18, -8
+  68 0014 3F93      		push r19
+  69               	.LCFI7:
+  70               		.cfi_def_cfa_offset 10
+  71               		.cfi_offset 19, -9
+  72 0016 4F93      		push r20
+  73               	.LCFI8:
+  74               		.cfi_def_cfa_offset 11
+  75               		.cfi_offset 20, -10
+  76 0018 5F93      		push r21
+  77               	.LCFI9:
+  78               		.cfi_def_cfa_offset 12
+  79               		.cfi_offset 21, -11
+  80 001a 6F93      		push r22
+  81               	.LCFI10:
+  82               		.cfi_def_cfa_offset 13
+  83               		.cfi_offset 22, -12
+  84 001c 7F93      		push r23
+  85               	.LCFI11:
+  86               		.cfi_def_cfa_offset 14
+  87               		.cfi_offset 23, -13
+  88 001e 8F93      		push r24
+  89               	.LCFI12:
+  90               		.cfi_def_cfa_offset 15
+  91               		.cfi_offset 24, -14
+  92 0020 9F93      		push r25
+  93               	.LCFI13:
+  94               		.cfi_def_cfa_offset 16
+  95               		.cfi_offset 25, -15
+  96 0022 AF93      		push r26
+  97               	.LCFI14:
+  98               		.cfi_def_cfa_offset 17
+  99               		.cfi_offset 26, -16
+ 100 0024 BF93      		push r27
+ 101               	.LCFI15:
+ 102               		.cfi_def_cfa_offset 18
+ 103               		.cfi_offset 27, -17
+ 104 0026 EF93      		push r30
+ 105               	.LCFI16:
+ 106               		.cfi_def_cfa_offset 19
+ 107               		.cfi_offset 30, -18
+ 108 0028 FF93      		push r31
+ 109               	.LCFI17:
+ 110               		.cfi_def_cfa_offset 20
+ 111               		.cfi_offset 31, -19
+ 112 002a CF93      		push r28
+ 113               	.LCFI18:
+ 114               		.cfi_def_cfa_offset 21
+ 115               		.cfi_offset 28, -20
+ 116 002c DF93      		push r29
+ 117               	.LCFI19:
+ 118               		.cfi_def_cfa_offset 22
+ 119               		.cfi_offset 29, -21
+ 120 002e CDB7      		in r28,__SP_L__
+ 121 0030 DEB7      		in r29,__SP_H__
+ 122               	.LCFI20:
+ 123               		.cfi_def_cfa_register 28
+ 124 0032 6497      		sbiw r28,20
+ 125               	.LCFI21:
+ 126               		.cfi_def_cfa_offset 42
+ 127 0034 DEBF      		out __SP_H__,r29
+ 128 0036 CDBF      		out __SP_L__,r28
+ 129               	/* prologue: Signal */
+ 130               	/* frame size = 20 */
+ 131               	/* stack size = 41 */
+ 132               	.L__stack_usage = 41
+  25:main.c        **** 	bufor[i] = UDR;
+ 133               		.loc 1 25 0
+ 134 0038 8091 0000 		lds r24,i
+ 135 003c 9091 0000 		lds r25,i+1
+ 136 0040 2CB1      		in r18,0xc
+ 137 0042 FC01      		movw r30,r24
+ 138 0044 E050      		subi r30,lo8(-(bufor))
+ 139 0046 F040      		sbci r31,hi8(-(bufor))
+ 140 0048 2083      		st Z,r18
+  26:main.c        **** 	
+  27:main.c        **** 	
+  28:main.c        **** 	
+  29:main.c        **** 	if(bufor[i] == '\r') {
+ 141               		.loc 1 29 0
+ 142 004a 2D30      		cpi r18,lo8(13)
+ 143 004c 01F0      		breq .+2
+ 144 004e 00C0      		rjmp .L2
+ 145               	.LBB2:
+  30:main.c        **** 		
+  31:main.c        **** 		char command[20];
+  32:main.c        **** 		char *element;
+  33:main.c        **** 		
+  34:main.c        **** 		strcpy(command, bufor); //copying bufor
+ 146               		.loc 1 34 0
+ 147 0050 60E0      		ldi r22,lo8(bufor)
+ 148 0052 70E0      		ldi r23,hi8(bufor)
+ 149 0054 CE01      		movw r24,r28
+ 150 0056 0196      		adiw r24,1
+ 151 0058 0E94 0000 		call strcpy
+ 152               	.LVL0:
+  35:main.c        **** 		element = strtok(command, " "); //taking first word
+ 153               		.loc 1 35 0
+ 154 005c 60E0      		ldi r22,lo8(.LC0)
+ 155 005e 70E0      		ldi r23,hi8(.LC0)
+ 156 0060 CE01      		movw r24,r28
+ 157 0062 0196      		adiw r24,1
+ 158 0064 0E94 0000 		call strtok
+ 159               	.LVL1:
+ 160 0068 8C01      		movw r16,r24
+ 161               	.LVL2:
+  36:main.c        **** 		
+  37:main.c        **** 		if( !strncmp( element, "SETA", 4)) {
+ 162               		.loc 1 37 0
+ 163 006a 44E0      		ldi r20,lo8(4)
+ 164 006c 50E0      		ldi r21,0
+ 165 006e 60E0      		ldi r22,lo8(.LC1)
+ 166 0070 70E0      		ldi r23,hi8(.LC1)
+ 167 0072 0E94 0000 		call strncmp
+ 168               	.LVL3:
+ 169 0076 892B      		or r24,r25
+ 170 0078 01F4      		brne .L3
+ 171               	.LBB3:
+  38:main.c        **** 			
+  39:main.c        **** 			element = strtok(NULL, " "); //taking second word
+ 172               		.loc 1 39 0
+ 173 007a 60E0      		ldi r22,lo8(.LC0)
+ 174 007c 70E0      		ldi r23,hi8(.LC0)
+ 175 007e 80E0      		ldi r24,0
+ 176 0080 90E0      		ldi r25,0
+ 177 0082 0E94 0000 		call strtok
+ 178               	.LVL4:
+  40:main.c        **** 			a = atoi((const char*) element);
+ 179               		.loc 1 40 0
+ 180 0086 0E94 0000 		call atoi
+ 181               	.LVL5:
+ 182 008a 8093 0000 		sts a,r24
+ 183               	.LBE3:
+ 184 008e 00C0      		rjmp .L4
+ 185               	.LVL6:
+ 186               	.L3:
+  41:main.c        **** 		}
+  42:main.c        **** 		else if(!strncmp( element, "SETB", 4)) {
+ 187               		.loc 1 42 0
+ 188 0090 44E0      		ldi r20,lo8(4)
+ 189 0092 50E0      		ldi r21,0
+ 190 0094 60E0      		ldi r22,lo8(.LC2)
+ 191 0096 70E0      		ldi r23,hi8(.LC2)
+ 192 0098 C801      		movw r24,r16
+ 193 009a 0E94 0000 		call strncmp
+ 194               	.LVL7:
+ 195 009e 892B      		or r24,r25
+ 196 00a0 01F4      		brne .L5
+ 197               	.LBB4:
+  43:main.c        **** 			
+  44:main.c        **** 			element = strtok(NULL, " "); //taking second word
+ 198               		.loc 1 44 0
+ 199 00a2 60E0      		ldi r22,lo8(.LC0)
+ 200 00a4 70E0      		ldi r23,hi8(.LC0)
+ 201 00a6 80E0      		ldi r24,0
+ 202 00a8 90E0      		ldi r25,0
+ 203 00aa 0E94 0000 		call strtok
+ 204               	.LVL8:
+  45:main.c        **** 			b = atoi((const char*) element);
+ 205               		.loc 1 45 0
+ 206 00ae 0E94 0000 		call atoi
+ 207               	.LVL9:
+ 208 00b2 8093 0000 		sts b,r24
+ 209               	.LBE4:
+ 210 00b6 00C0      		rjmp .L4
+ 211               	.LVL10:
+ 212               	.L5:
+  46:main.c        **** 		}
+  47:main.c        **** 		else if(!strncmp( element, "MOVE1", 5)) {
+ 213               		.loc 1 47 0
+ 214 00b8 45E0      		ldi r20,lo8(5)
+ 215 00ba 50E0      		ldi r21,0
+ 216 00bc 60E0      		ldi r22,lo8(.LC3)
+ 217 00be 70E0      		ldi r23,hi8(.LC3)
+ 218 00c0 C801      		movw r24,r16
+ 219 00c2 0E94 0000 		call strncmp
+ 220               	.LVL11:
+ 221 00c6 892B      		or r24,r25
+ 222 00c8 01F4      		brne .L6
+ 223               	.LBB5:
+  48:main.c        **** 			element = strtok(NULL, " "); //taking second word
+ 224               		.loc 1 48 0
+ 225 00ca 60E0      		ldi r22,lo8(.LC0)
+ 226 00cc 70E0      		ldi r23,hi8(.LC0)
+ 227 00ce 80E0      		ldi r24,0
+ 228 00d0 90E0      		ldi r25,0
+ 229 00d2 0E94 0000 		call strtok
+ 230               	.LVL12:
+  49:main.c        **** 			deg = atoi((const char*) element);
+ 231               		.loc 1 49 0
+ 232 00d6 0E94 0000 		call atoi
+ 233               	.LVL13:
+ 234 00da 9093 0000 		sts deg+1,r25
+ 235 00de 8093 0000 		sts deg,r24
+  50:main.c        **** 			setBigServo(deg);
+ 236               		.loc 1 50 0
+ 237 00e2 8091 0000 		lds r24,deg
+ 238 00e6 9091 0000 		lds r25,deg+1
+ 239 00ea 0E94 0000 		call setBigServo
+ 240               	.LVL14:
+ 241               	.LBE5:
+ 242 00ee 00C0      		rjmp .L4
+ 243               	.LVL15:
+ 244               	.L6:
+  51:main.c        **** 		}
+  52:main.c        **** 		else if(!strncmp( element, "MOVE2", 5)) {
+ 245               		.loc 1 52 0
+ 246 00f0 45E0      		ldi r20,lo8(5)
+ 247 00f2 50E0      		ldi r21,0
+ 248 00f4 60E0      		ldi r22,lo8(.LC4)
+ 249 00f6 70E0      		ldi r23,hi8(.LC4)
+ 250 00f8 C801      		movw r24,r16
+ 251 00fa 0E94 0000 		call strncmp
+ 252               	.LVL16:
+ 253 00fe 892B      		or r24,r25
+ 254 0100 01F0      		breq .+2
+ 255 0102 00C0      		rjmp .L7
+ 256               	.LBB6:
+  53:main.c        **** 			element = strtok(NULL, " "); //taking second word
+ 257               		.loc 1 53 0
+ 258 0104 60E0      		ldi r22,lo8(.LC0)
+ 259 0106 70E0      		ldi r23,hi8(.LC0)
+ 260 0108 80E0      		ldi r24,0
+ 261 010a 90E0      		ldi r25,0
+ 262 010c 0E94 0000 		call strtok
+ 263               	.LVL17:
+  54:main.c        **** 			deg = atoi((const char*) element);
+ 264               		.loc 1 54 0
+ 265 0110 0E94 0000 		call atoi
+ 266               	.LVL18:
+ 267 0114 9093 0000 		sts deg+1,r25
+ 268 0118 8093 0000 		sts deg,r24
+  55:main.c        **** 			fprintf(&u_stream, "%d", deg);
+ 269               		.loc 1 55 0
+ 270 011c 8091 0000 		lds r24,deg
+ 271 0120 9091 0000 		lds r25,deg+1
+ 272 0124 9F93      		push r25
+ 273 0126 8F93      		push r24
+ 274 0128 80E0      		ldi r24,lo8(.LC5)
+ 275 012a E82E      		mov r14,r24
+ 276 012c 80E0      		ldi r24,hi8(.LC5)
+ 277 012e F82E      		mov r15,r24
+ 278 0130 FF92      		push r15
+ 279 0132 EF92      		push r14
+ 280 0134 00E0      		ldi r16,lo8(u_stream)
+ 281 0136 10E0      		ldi r17,hi8(u_stream)
+ 282 0138 1F93      		push r17
+ 283 013a 0F93      		push r16
+ 284 013c 0E94 0000 		call fprintf
+ 285               	.LVL19:
+  56:main.c        **** 			setSmallServo(deg);
+ 286               		.loc 1 56 0
+ 287 0140 8091 0000 		lds r24,deg
+ 288 0144 9091 0000 		lds r25,deg+1
+ 289 0148 0E94 0000 		call setSmallServo
+ 290               	.LVL20:
+  57:main.c        **** 			fprintf(&u_stream, "%d", 100*deg/9 + 2000);
+ 291               		.loc 1 57 0
+ 292 014c 2091 0000 		lds r18,deg
+ 293 0150 3091 0000 		lds r19,deg+1
+ 294 0154 44E6      		ldi r20,lo8(100)
+ 295 0156 429F      		mul r20,r18
+ 296 0158 C001      		movw r24,r0
+ 297 015a 439F      		mul r20,r19
+ 298 015c 900D      		add r25,r0
+ 299 015e 1124      		clr __zero_reg__
+ 300 0160 69E0      		ldi r22,lo8(9)
+ 301 0162 70E0      		ldi r23,0
+ 302 0164 0E94 0000 		call __divmodhi4
+ 303 0168 6053      		subi r22,48
+ 304 016a 784F      		sbci r23,-8
+ 305 016c 7F93      		push r23
+ 306 016e 6F93      		push r22
+ 307 0170 FF92      		push r15
+ 308 0172 EF92      		push r14
+ 309 0174 1F93      		push r17
+ 310 0176 0F93      		push r16
+ 311 0178 0E94 0000 		call fprintf
+ 312               	.LVL21:
+ 313               	.LBE6:
+ 314 017c 0FB6      		in __tmp_reg__,__SREG__
+ 315 017e F894      		cli
+ 316 0180 DEBF      		out __SP_H__,r29
+ 317 0182 0FBE      		out __SREG__,__tmp_reg__
+ 318 0184 CDBF      		out __SP_L__,r28
+ 319 0186 00C0      		rjmp .L4
+ 320               	.LVL22:
+ 321               	.L7:
+  58:main.c        **** 		}
+  59:main.c        **** 		else if(!strncmp( element, "RUN", 3)) {
+ 322               		.loc 1 59 0
+ 323 0188 43E0      		ldi r20,lo8(3)
+ 324 018a 50E0      		ldi r21,0
+ 325 018c 60E0      		ldi r22,lo8(.LC6)
+ 326 018e 70E0      		ldi r23,hi8(.LC6)
+ 327 0190 C801      		movw r24,r16
+ 328 0192 0E94 0000 		call strncmp
+ 329               	.LVL23:
+ 330 0196 892B      		or r24,r25
+ 331 0198 01F4      		brne .L8
+  60:main.c        **** 			run=1;
+ 332               		.loc 1 60 0
+ 333 019a 81E0      		ldi r24,lo8(1)
+ 334 019c 90E0      		ldi r25,0
+ 335 019e 9093 0000 		sts run+1,r25
+ 336 01a2 8093 0000 		sts run,r24
+ 337 01a6 00C0      		rjmp .L4
+ 338               	.L8:
+  61:main.c        **** 		}
+  62:main.c        **** 		else {
+  63:main.c        **** 			fprintf(&u_stream, "Niepoprawne polecenie.");
+ 339               		.loc 1 63 0
+ 340 01a8 60E0      		ldi r22,lo8(u_stream)
+ 341 01aa 70E0      		ldi r23,hi8(u_stream)
+ 342 01ac 80E0      		ldi r24,lo8(.LC7)
+ 343 01ae 90E0      		ldi r25,hi8(.LC7)
+ 344 01b0 0E94 0000 		call fputs
+ 345               	.LVL24:
+ 346               	.L4:
+  64:main.c        **** 		}
+  65:main.c        **** 		
+  66:main.c        **** 		lcd_set_xy(0,0);
+ 347               		.loc 1 66 0
+ 348 01b4 60E0      		ldi r22,0
+ 349 01b6 80E0      		ldi r24,0
+ 350 01b8 0E94 0000 		call lcd_set_xy
+ 351               	.LVL25:
+  67:main.c        **** 		fprintf(&lcd_stream, "a=%02d b=%02d       ", a, b);
+ 352               		.loc 1 67 0
+ 353 01bc 9091 0000 		lds r25,b
+ 354 01c0 8091 0000 		lds r24,a
+ 355 01c4 1F92      		push __zero_reg__
+ 356 01c6 9F93      		push r25
+ 357 01c8 1F92      		push __zero_reg__
+ 358 01ca 8F93      		push r24
+ 359 01cc 80E0      		ldi r24,lo8(.LC8)
+ 360 01ce 90E0      		ldi r25,hi8(.LC8)
+ 361 01d0 9F93      		push r25
+ 362 01d2 8F93      		push r24
+ 363 01d4 80E0      		ldi r24,lo8(lcd_stream)
+ 364 01d6 90E0      		ldi r25,hi8(lcd_stream)
+ 365 01d8 9F93      		push r25
+ 366 01da 8F93      		push r24
+ 367 01dc 0E94 0000 		call fprintf
+ 368               	.LVL26:
+  68:main.c        **** 		i=0;
+ 369               		.loc 1 68 0
+ 370 01e0 1092 0000 		sts i+1,__zero_reg__
+ 371 01e4 1092 0000 		sts i,__zero_reg__
+ 372               	.LBE2:
+ 373 01e8 0FB6      		in __tmp_reg__,__SREG__
+ 374 01ea F894      		cli
+ 375 01ec DEBF      		out __SP_H__,r29
+ 376 01ee 0FBE      		out __SREG__,__tmp_reg__
+ 377 01f0 CDBF      		out __SP_L__,r28
+ 378 01f2 00C0      		rjmp .L1
+ 379               	.L2:
+  69:main.c        **** 		
+  70:main.c        **** 	}
+  71:main.c        **** 	else {
+  72:main.c        **** 		i++;
+ 380               		.loc 1 72 0
+ 381 01f4 0196      		adiw r24,1
+ 382 01f6 9093 0000 		sts i+1,r25
+ 383 01fa 8093 0000 		sts i,r24
+ 384               	.L1:
+ 385               	/* epilogue start */
+  73:main.c        **** 	}
+  74:main.c        **** 	
+  75:main.c        **** }
+ 386               		.loc 1 75 0
+ 387 01fe 6496      		adiw r28,20
+ 388 0200 0FB6      		in __tmp_reg__,__SREG__
+ 389 0202 F894      		cli
+ 390 0204 DEBF      		out __SP_H__,r29
+ 391 0206 0FBE      		out __SREG__,__tmp_reg__
+ 392 0208 CDBF      		out __SP_L__,r28
+ 393 020a DF91      		pop r29
+ 394 020c CF91      		pop r28
+ 395 020e FF91      		pop r31
+ 396 0210 EF91      		pop r30
+ 397 0212 BF91      		pop r27
+ 398 0214 AF91      		pop r26
+ 399 0216 9F91      		pop r25
+ 400 0218 8F91      		pop r24
+ 401 021a 7F91      		pop r23
+ 402 021c 6F91      		pop r22
+ 403 021e 5F91      		pop r21
+ 404 0220 4F91      		pop r20
+ 405 0222 3F91      		pop r19
+ 406 0224 2F91      		pop r18
+ 407 0226 1F91      		pop r17
+ 408 0228 0F91      		pop r16
+ 409 022a FF90      		pop r15
+ 410 022c EF90      		pop r14
+ 411 022e 0F90      		pop r0
+ 412 0230 0FBE      		out __SREG__,r0
+ 413 0232 0F90      		pop r0
+ 414 0234 1F90      		pop r1
+ 415 0236 1895      		reti
+ 416               		.cfi_endproc
+ 417               	.LFE7:
+ 419               		.section	.rodata.str1.1
+ 420               	.LC9:
+ 421 004b 576F 726B 		.string	"Working...    "
+ 421      696E 672E 
+ 421      2E2E 2020 
+ 421      2020 00
+ 422               	.LC10:
+ 423 005a 2564 0925 		.string	"%d\t%.2f\t%.2f\n"
+ 423      2E32 6609 
+ 423      252E 3266 
+ 423      0A00 
+ 424               	.LC11:
+ 425 0068 4669 6E69 		.string	"Finished!      "
+ 425      7368 6564 
+ 425      2120 2020 
+ 425      2020 2000 
+ 426               		.section	.text.startup,"ax",@progbits
+ 427               	.global	main
+ 429               	main:
+ 430               	.LFB8:
+  76:main.c        **** 
+  77:main.c        **** int main(void) {
+ 431               		.loc 1 77 0
+ 432               		.cfi_startproc
+ 433 0000 CF93      		push r28
+ 434               	.LCFI22:
+ 435               		.cfi_def_cfa_offset 3
+ 436               		.cfi_offset 28, -2
+ 437 0002 DF93      		push r29
+ 438               	.LCFI23:
+ 439               		.cfi_def_cfa_offset 4
+ 440               		.cfi_offset 29, -3
+ 441 0004 CDB7      		in r28,__SP_L__
+ 442 0006 DEB7      		in r29,__SP_H__
+ 443               	.LCFI24:
+ 444               		.cfi_def_cfa_register 28
+ 445               	/* prologue: function */
+ 446               	/* frame size = 0 */
+ 447               	/* stack size = 2 */
+ 448               	.L__stack_usage = 2
+  78:main.c        **** 	
+  79:main.c        **** 	USART_Init(1);
+ 449               		.loc 1 79 0
+ 450 0008 81E0      		ldi r24,lo8(1)
+ 451 000a 90E0      		ldi r25,0
+ 452 000c 0E94 0000 		call USART_Init
+ 453               	.LVL27:
+  80:main.c        **** 	
+  81:main.c        **** 	lcdinit();
+ 454               		.loc 1 81 0
+ 455 0010 0E94 0000 		call lcdinit
+ 456               	.LVL28:
+  82:main.c        **** 	lcd_set_cursor(0);
+ 457               		.loc 1 82 0
+ 458 0014 80E0      		ldi r24,0
+ 459 0016 0E94 0000 		call lcd_set_cursor
+ 460               	.LVL29:
+  83:main.c        **** 	lcd_set_xy(0,0);
+ 461               		.loc 1 83 0
+ 462 001a 60E0      		ldi r22,0
+ 463 001c 80E0      		ldi r24,0
+ 464 001e 0E94 0000 		call lcd_set_xy
+ 465               	.LVL30:
+  84:main.c        **** 	fprintf(&lcd_stream, "a=%02d b=%02d       ", a, b);
+ 466               		.loc 1 84 0
+ 467 0022 9091 0000 		lds r25,b
+ 468 0026 8091 0000 		lds r24,a
+ 469 002a 1F92      		push __zero_reg__
+ 470 002c 9F93      		push r25
+ 471 002e 1F92      		push __zero_reg__
+ 472 0030 8F93      		push r24
+ 473 0032 80E0      		ldi r24,lo8(.LC8)
+ 474 0034 90E0      		ldi r25,hi8(.LC8)
+ 475 0036 9F93      		push r25
+ 476 0038 8F93      		push r24
+ 477 003a 80E0      		ldi r24,lo8(lcd_stream)
+ 478 003c 90E0      		ldi r25,hi8(lcd_stream)
+ 479 003e 9F93      		push r25
+ 480 0040 8F93      		push r24
+ 481 0042 0E94 0000 		call fprintf
+ 482               	.LVL31:
+  85:main.c        **** 	
+  86:main.c        **** 	
+  87:main.c        **** 	
+  88:main.c        **** 	//konfigurujemy Fast PWM
+  89:main.c        **** 	ICR1 = 39999; //częstotliwość PWM
+ 483               		.loc 1 89 0
+ 484 0046 8FE3      		ldi r24,lo8(63)
+ 485 0048 9CE9      		ldi r25,lo8(-100)
+ 486 004a 97BD      		out 0x26+1,r25
+ 487 004c 86BD      		out 0x26,r24
+  90:main.c        **** 	TCCR1A |= (1<<COM1A1); //compare output mode big servo
+ 488               		.loc 1 90 0
+ 489 004e 8FB5      		in r24,0x2f
+ 490 0050 8068      		ori r24,lo8(-128)
+ 491 0052 8FBD      		out 0x2f,r24
+  91:main.c        **** 	TCCR1A |= (1<<COM1B1); //compare output mode small servo
+ 492               		.loc 1 91 0
+ 493 0054 8FB5      		in r24,0x2f
+ 494 0056 8062      		ori r24,lo8(32)
+ 495 0058 8FBD      		out 0x2f,r24
+  92:main.c        **** 	//ustawienie trybu Fast PWM:
+  93:main.c        **** 	TCCR1A |= (1<<WGM11);
+ 496               		.loc 1 93 0
+ 497 005a 8FB5      		in r24,0x2f
+ 498 005c 8260      		ori r24,lo8(2)
+ 499 005e 8FBD      		out 0x2f,r24
+  94:main.c        **** 	TCCR1B |= (1<<WGM12);
+ 500               		.loc 1 94 0
+ 501 0060 8EB5      		in r24,0x2e
+ 502 0062 8860      		ori r24,lo8(8)
+ 503 0064 8EBD      		out 0x2e,r24
+  95:main.c        **** 	TCCR1B |= (1<<WGM13);
+ 504               		.loc 1 95 0
+ 505 0066 8EB5      		in r24,0x2e
+ 506 0068 8061      		ori r24,lo8(16)
+ 507 006a 8EBD      		out 0x2e,r24
+  96:main.c        **** 	//.
+  97:main.c        **** 	TCCR1B |= (1<<CS11); //preskaler
+ 508               		.loc 1 97 0
+ 509 006c 8EB5      		in r24,0x2e
+ 510 006e 8260      		ori r24,lo8(2)
+ 511 0070 8EBD      		out 0x2e,r24
+  98:main.c        **** 	DDRD = 0xff; //making PD5 and DDR4 (OC1A and OC1B) an output
+ 512               		.loc 1 98 0
+ 513 0072 8FEF      		ldi r24,lo8(-1)
+ 514 0074 81BB      		out 0x11,r24
+  99:main.c        **** 	
+ 100:main.c        **** 	
+ 101:main.c        **** 	setBigServo(1);
+ 515               		.loc 1 101 0
+ 516 0076 81E0      		ldi r24,lo8(1)
+ 517 0078 90E0      		ldi r25,0
+ 518 007a 0E94 0000 		call setBigServo
+ 519               	.LVL32:
+ 102:main.c        **** 	setSmallServo(1);
+ 520               		.loc 1 102 0
+ 521 007e 81E0      		ldi r24,lo8(1)
+ 522 0080 90E0      		ldi r25,0
+ 523 0082 0E94 0000 		call setSmallServo
+ 524               	.LVL33:
+ 103:main.c        **** 	
+ 104:main.c        **** 	/* OCR1A=3000; //set servo at the midde
+ 105:main.c        **** 	OCR1B=2000;
+ 106:main.c        **** 	_delay_ms(2000);
+ 107:main.c        **** 	
+ 108:main.c        **** 	OCR1A=2001;
+ 109:main.c        **** 	OCR1B = 4000;
+ 110:main.c        **** 	_delay_ms(2000); */
+ 111:main.c        **** 		
+ 112:main.c        **** 	sei();
+ 525               		.loc 1 112 0
+ 526               	/* #APP */
+ 527               	 ;  112 "main.c" 1
+ 528 0086 7894      		sei
+ 529               	 ;  0 "" 2
+ 530               	/* #NOAPP */
+ 531 0088 8DB7      		in r24,__SP_L__
+ 532 008a 9EB7      		in r25,__SP_H__
+ 533 008c 0896      		adiw r24,8
+ 534 008e 0FB6      		in __tmp_reg__,__SREG__
+ 535 0090 F894      		cli
+ 536 0092 9EBF      		out __SP_H__,r25
+ 537 0094 0FBE      		out __SREG__,__tmp_reg__
+ 538 0096 8DBF      		out __SP_L__,r24
+ 539               	.LBB7:
+ 540               	.LBB8:
+ 113:main.c        **** 	
+ 114:main.c        **** 	while(1) {
+ 115:main.c        **** 		if(run==1) {
+ 116:main.c        **** 			lcd_set_xy(0,1);
+ 117:main.c        **** 			fprintf(&lcd_stream, "Working...    ");
+ 118:main.c        **** 			int N=100;
+ 119:main.c        **** 			float theta[N], phi[N];
+ 120:main.c        **** 			prepare(a, b, theta,  phi, N);
+ 121:main.c        **** 			draw(theta, phi, N);
+ 122:main.c        **** 			
+ 123:main.c        **** 			for(int i=0; i<N; i++) {
+ 124:main.c        **** 				fprintf(&u_stream, "%d\t%.2f\t%.2f\n", i, theta[i], phi[i]);
+ 541               		.loc 1 124 0
+ 542 0098 80E0      		ldi r24,lo8(.LC10)
+ 543 009a 682E      		mov r6,r24
+ 544 009c 80E0      		ldi r24,hi8(.LC10)
+ 545 009e 782E      		mov r7,r24
+ 546 00a0 90E0      		ldi r25,lo8(u_stream)
+ 547 00a2 A92E      		mov r10,r25
+ 548 00a4 90E0      		ldi r25,hi8(u_stream)
+ 549 00a6 B92E      		mov r11,r25
+ 550               	.L12:
+ 551               	.LBE8:
+ 552               	.LBE7:
+ 115:main.c        **** 			lcd_set_xy(0,1);
+ 553               		.loc 1 115 0
+ 554 00a8 8091 0000 		lds r24,run
+ 555 00ac 9091 0000 		lds r25,run+1
+ 556 00b0 0197      		sbiw r24,1
+ 557 00b2 01F4      		brne .L12
+ 558               	.LBB10:
+ 115:main.c        **** 			lcd_set_xy(0,1);
+ 559               		.loc 1 115 0 is_stmt 0 discriminator 1
+ 560 00b4 8DB6      		in r8,__SP_L__
+ 561 00b6 9EB6      		in r9,__SP_H__
+ 116:main.c        **** 			fprintf(&lcd_stream, "Working...    ");
+ 562               		.loc 1 116 0 is_stmt 1 discriminator 1
+ 563 00b8 61E0      		ldi r22,lo8(1)
+ 564 00ba 80E0      		ldi r24,0
+ 565 00bc 0E94 0000 		call lcd_set_xy
+ 566               	.LVL34:
+ 117:main.c        **** 			int N=100;
+ 567               		.loc 1 117 0 discriminator 1
+ 568 00c0 60E0      		ldi r22,lo8(lcd_stream)
+ 569 00c2 70E0      		ldi r23,hi8(lcd_stream)
+ 570 00c4 80E0      		ldi r24,lo8(.LC9)
+ 571 00c6 90E0      		ldi r25,hi8(.LC9)
+ 572 00c8 0E94 0000 		call fputs
+ 573               	.LVL35:
+ 119:main.c        **** 			prepare(a, b, theta,  phi, N);
+ 574               		.loc 1 119 0 discriminator 1
+ 575 00cc EDB7      		in r30,__SP_L__
+ 576 00ce FEB7      		in r31,__SP_H__
+ 577 00d0 E059      		subi r30,-112
+ 578 00d2 F140      		sbci r31,1
+ 579 00d4 0FB6      		in __tmp_reg__,__SREG__
+ 580 00d6 F894      		cli
+ 581 00d8 FEBF      		out __SP_H__,r31
+ 582 00da 0FBE      		out __SREG__,__tmp_reg__
+ 583 00dc EDBF      		out __SP_L__,r30
+ 584 00de 8DB7      		in r24,__SP_L__
+ 585 00e0 9EB7      		in r25,__SP_H__
+ 586 00e2 0196      		adiw r24,1
+ 587 00e4 6C01      		movw r12,r24
+ 588               	.LVL36:
+ 589 00e6 E059      		subi r30,-112
+ 590 00e8 F140      		sbci r31,1
+ 591 00ea 0FB6      		in __tmp_reg__,__SREG__
+ 592 00ec F894      		cli
+ 593 00ee FEBF      		out __SP_H__,r31
+ 594 00f0 0FBE      		out __SREG__,__tmp_reg__
+ 595 00f2 EDBF      		out __SP_L__,r30
+ 596 00f4 8059      		subi r24,-112
+ 597 00f6 9140      		sbci r25,1
+ 598 00f8 7C01      		movw r14,r24
+ 599               	.LVL37:
+ 120:main.c        **** 			draw(theta, phi, N);
+ 600               		.loc 1 120 0 discriminator 1
+ 601 00fa 6091 0000 		lds r22,b
+ 602 00fe 8091 0000 		lds r24,a
+ 603 0102 04E6      		ldi r16,lo8(100)
+ 604 0104 10E0      		ldi r17,0
+ 605 0106 9701      		movw r18,r14
+ 606 0108 A601      		movw r20,r12
+ 607 010a 0E94 0000 		call prepare
+ 608               	.LVL38:
+ 121:main.c        **** 			
+ 609               		.loc 1 121 0 discriminator 1
+ 610 010e 44E6      		ldi r20,lo8(100)
+ 611 0110 50E0      		ldi r21,0
+ 612 0112 B701      		movw r22,r14
+ 613 0114 C601      		movw r24,r12
+ 614 0116 0E94 0000 		call draw
+ 615               	.LVL39:
+ 616 011a 8601      		movw r16,r12
+ 617               	.LBB9:
+ 123:main.c        **** 				fprintf(&u_stream, "%d\t%.2f\t%.2f\n", i, theta[i], phi[i]);
+ 618               		.loc 1 123 0 discriminator 1
+ 619 011c C12C      		mov r12,__zero_reg__
+ 620 011e D12C      		mov r13,__zero_reg__
+ 621               	.LVL40:
+ 622               	.L13:
+ 623               		.loc 1 124 0 discriminator 3
+ 624 0120 F701      		movw r30,r14
+ 625 0122 4081      		ld r20,Z
+ 626 0124 5181      		ldd r21,Z+1
+ 627 0126 6281      		ldd r22,Z+2
+ 628 0128 7381      		ldd r23,Z+3
+ 629 012a F4E0      		ldi r31,4
+ 630 012c EF0E      		add r14,r31
+ 631 012e F11C      		adc r15,__zero_reg__
+ 632 0130 F801      		movw r30,r16
+ 633 0132 8081      		ld r24,Z
+ 634 0134 9181      		ldd r25,Z+1
+ 635 0136 2281      		ldd r18,Z+2
+ 636 0138 3381      		ldd r19,Z+3
+ 637 013a 0C5F      		subi r16,-4
+ 638 013c 1F4F      		sbci r17,-1
+ 639 013e 7F93      		push r23
+ 640 0140 6F93      		push r22
+ 641 0142 5F93      		push r21
+ 642 0144 4F93      		push r20
+ 643 0146 3F93      		push r19
+ 644 0148 2F93      		push r18
+ 645 014a 9F93      		push r25
+ 646 014c 8F93      		push r24
+ 647 014e DF92      		push r13
+ 648 0150 CF92      		push r12
+ 649 0152 7F92      		push r7
+ 650 0154 6F92      		push r6
+ 651 0156 BF92      		push r11
+ 652 0158 AF92      		push r10
+ 653 015a 0E94 0000 		call fprintf
+ 654               	.LVL41:
+ 123:main.c        **** 				fprintf(&u_stream, "%d\t%.2f\t%.2f\n", i, theta[i], phi[i]);
+ 655               		.loc 1 123 0 discriminator 3
+ 656 015e FFEF      		ldi r31,-1
+ 657 0160 CF1A      		sub r12,r31
+ 658 0162 DF0A      		sbc r13,r31
+ 659               	.LVL42:
+ 660 0164 8DB7      		in r24,__SP_L__
+ 661 0166 9EB7      		in r25,__SP_H__
+ 662 0168 0E96      		adiw r24,14
+ 663 016a 0FB6      		in __tmp_reg__,__SREG__
+ 664 016c F894      		cli
+ 665 016e 9EBF      		out __SP_H__,r25
+ 666 0170 0FBE      		out __SREG__,__tmp_reg__
+ 667 0172 8DBF      		out __SP_L__,r24
+ 668 0174 94E6      		ldi r25,100
+ 669 0176 C916      		cp r12,r25
+ 670 0178 D104      		cpc r13,__zero_reg__
+ 671 017a 01F4      		brne .L13
+ 672               	.LBE9:
+ 125:main.c        **** 			}
+ 126:main.c        **** 			
+ 127:main.c        **** 			lcd_set_xy(0,1);
+ 673               		.loc 1 127 0
+ 674 017c 61E0      		ldi r22,lo8(1)
+ 675 017e 80E0      		ldi r24,0
+ 676 0180 0E94 0000 		call lcd_set_xy
+ 677               	.LVL43:
+ 128:main.c        **** 			fprintf(&lcd_stream, "Finished!      ");
+ 678               		.loc 1 128 0
+ 679 0184 60E0      		ldi r22,lo8(lcd_stream)
+ 680 0186 70E0      		ldi r23,hi8(lcd_stream)
+ 681 0188 80E0      		ldi r24,lo8(.LC11)
+ 682 018a 90E0      		ldi r25,hi8(.LC11)
+ 683 018c 0E94 0000 		call fputs
+ 684               	.LVL44:
+ 129:main.c        **** 			run=0;
+ 685               		.loc 1 129 0
+ 686 0190 1092 0000 		sts run+1,__zero_reg__
+ 687 0194 1092 0000 		sts run,__zero_reg__
+ 688 0198 0FB6      		in __tmp_reg__,__SREG__
+ 689 019a F894      		cli
+ 690 019c 9EBE      		out __SP_H__,r9
+ 691 019e 0FBE      		out __SREG__,__tmp_reg__
+ 692 01a0 8DBE      		out __SP_L__,r8
+ 693 01a2 00C0      		rjmp .L12
+ 694               	.LBE10:
+ 695               		.cfi_endproc
+ 696               	.LFE8:
+ 698               	.global	run
+ 699               		.section .bss
+ 702               	run:
+ 703 0000 0000      		.zero	2
+ 704               	.global	b
+ 705               		.data
+ 708               	b:
+ 709 0000 03        		.byte	3
+ 710               	.global	a
+ 713               	a:
+ 714 0001 02        		.byte	2
+ 715               		.comm	bufor,12,1
+ 716               		.comm	deg,2,1
+ 717               	.global	i
+ 718               		.section .bss
+ 721               	i:
+ 722 0002 0000      		.zero	2
+ 723               	.global	u_stream
+ 724               		.data
+ 727               	u_stream:
+ 728 0002 0000 00   		.zero	3
+ 729 0005 02        		.byte	2
+ 730 0006 0000 0000 		.zero	4
+ 731 000a 0000      		.word	gs(u_putc)
+ 732 000c 0000      		.word	0
+ 733 000e 0000      		.word	0
+ 734               	.global	lcd_stream
+ 737               	lcd_stream:
+ 738 0010 0000 00   		.zero	3
+ 739 0013 02        		.byte	2
+ 740 0014 0000 0000 		.zero	4
+ 741 0018 0000      		.word	gs(lcd_putc)
+ 742 001a 0000      		.word	0
+ 743 001c 0000      		.word	0
+ 744               		.text
+ 745               	.Letext0:
+ 746               		.file 2 "/usr/lib/avr/include/stdint.h"
+ 747               		.file 3 "/usr/lib/avr/include/stdio.h"
+ 748               		.file 4 "/usr/lib/avr/include/string.h"
+ 749               		.file 5 "robot.h"
+ 750               		.file 6 "lcd.h"
+ 751               		.file 7 "USART.h"
+ 752               		.file 8 "<built-in>"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+     /tmp/ccCiVyFE.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccCiVyFE.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccCiVyFE.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccCiVyFE.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccCiVyFE.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccCiVyFE.s:32     .text:0000000000000000 __vector_13
+     /tmp/ccCiVyFE.s:721    .bss:0000000000000002 i
+                            *COM*:000000000000000c bufor
+     /tmp/ccCiVyFE.s:713    .data:0000000000000001 a
+     /tmp/ccCiVyFE.s:708    .data:0000000000000000 b
+                            *COM*:0000000000000002 deg
+     /tmp/ccCiVyFE.s:727    .data:0000000000000002 u_stream
+     /tmp/ccCiVyFE.s:702    .bss:0000000000000000 run
+     /tmp/ccCiVyFE.s:737    .data:0000000000000010 lcd_stream
+     /tmp/ccCiVyFE.s:429    .text.startup:0000000000000000 main
+
+UNDEFINED SYMBOLS
+strcpy
+strtok
+strncmp
+atoi
+setBigServo
+fprintf
+setSmallServo
+__divmodhi4
+fputs
+lcd_set_xy
+USART_Init
+lcdinit
+lcd_set_cursor
+prepare
+draw
+u_putc
+lcd_putc
+__do_copy_data
+__do_clear_bss

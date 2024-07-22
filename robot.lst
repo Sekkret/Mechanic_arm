@@ -1,0 +1,894 @@
+   1               		.file	"robot.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               	.global	setSmallServo
+  12               	setSmallServo:
+  13               	.LFB6:
+  14               		.file 1 "robot.c"
+   1:robot.c       **** #include "robot.h"
+   2:robot.c       **** 
+   3:robot.c       **** 
+   4:robot.c       **** void setSmallServo(int deg) {
+  15               		.loc 1 4 0
+  16               		.cfi_startproc
+  17               	.LVL0:
+  18               	/* prologue: function */
+  19               	/* frame size = 0 */
+  20               	/* stack size = 0 */
+  21               	.L__stack_usage = 0
+   5:robot.c       **** 	
+   6:robot.c       **** 	deg=deg-45;
+   7:robot.c       **** 	deg = 200*deg/9 + 2000;
+  22               		.loc 1 7 0
+  23 0000 9C01      		movw r18,r24
+  24 0002 2D52      		subi r18,45
+  25 0004 3109      		sbc r19,__zero_reg__
+  26               	.LVL1:
+  27 0006 48EC      		ldi r20,lo8(-56)
+  28 0008 429F      		mul r20,r18
+  29 000a C001      		movw r24,r0
+  30 000c 439F      		mul r20,r19
+  31 000e 900D      		add r25,r0
+  32 0010 1124      		clr __zero_reg__
+  33 0012 69E0      		ldi r22,lo8(9)
+  34 0014 70E0      		ldi r23,0
+  35 0016 0E94 0000 		call __divmodhi4
+  36               	.LVL2:
+   8:robot.c       **** 	if(deg>=1000 && deg<=5000)
+  37               		.loc 1 8 0
+  38 001a CB01      		movw r24,r22
+  39 001c 8053      		subi r24,48
+  40 001e 984F      		sbci r25,-8
+  41               	.LVL3:
+  42 0020 6851      		subi r22,24
+  43 0022 7C4F      		sbci r23,-4
+  44 0024 613A      		cpi r22,-95
+  45 0026 7F40      		sbci r23,15
+  46 0028 00F4      		brsh .L1
+   9:robot.c       **** 			OCR1B=deg;
+  47               		.loc 1 9 0
+  48 002a 99BD      		out 0x28+1,r25
+  49 002c 88BD      		out 0x28,r24
+  50               	.L1:
+  51 002e 0895      		ret
+  52               		.cfi_endproc
+  53               	.LFE6:
+  55               	.global	setBigServo
+  57               	setBigServo:
+  58               	.LFB7:
+  10:robot.c       **** }
+  11:robot.c       **** 
+  12:robot.c       **** void setBigServo(int deg) {
+  59               		.loc 1 12 0
+  60               		.cfi_startproc
+  61               	.LVL4:
+  62               	/* prologue: function */
+  63               	/* frame size = 0 */
+  64               	/* stack size = 0 */
+  65               	.L__stack_usage = 0
+  13:robot.c       **** 	deg=90-deg;
+  14:robot.c       **** 	deg = 200*deg/9 + 2000;
+  66               		.loc 1 14 0
+  67 0030 2AE5      		ldi r18,lo8(90)
+  68 0032 30E0      		ldi r19,0
+  69 0034 281B      		sub r18,r24
+  70 0036 390B      		sbc r19,r25
+  71               	.LVL5:
+  72 0038 48EC      		ldi r20,lo8(-56)
+  73 003a 429F      		mul r20,r18
+  74 003c C001      		movw r24,r0
+  75 003e 439F      		mul r20,r19
+  76 0040 900D      		add r25,r0
+  77 0042 1124      		clr __zero_reg__
+  78 0044 69E0      		ldi r22,lo8(9)
+  79 0046 70E0      		ldi r23,0
+  80 0048 0E94 0000 		call __divmodhi4
+  81               	.LVL6:
+  15:robot.c       **** 	if(deg>=2000 && deg<=5000)
+  82               		.loc 1 15 0
+  83 004c CB01      		movw r24,r22
+  84 004e 8053      		subi r24,48
+  85 0050 984F      		sbci r25,-8
+  86               	.LVL7:
+  87 0052 693B      		cpi r22,-71
+  88 0054 7B40      		sbci r23,11
+  89 0056 00F4      		brsh .L4
+  16:robot.c       **** 			OCR1A=deg;
+  90               		.loc 1 16 0
+  91 0058 9BBD      		out 0x2a+1,r25
+  92 005a 8ABD      		out 0x2a,r24
+  93               	.L4:
+  94 005c 0895      		ret
+  95               		.cfi_endproc
+  96               	.LFE7:
+  98               	.global	__floatsisf
+  99               	.global	__mulsf3
+ 100               	.global	__floatunsisf
+ 101               	.global	__divsf3
+ 102               	.global	__addsf3
+ 103               	.global	__subsf3
+ 104               	.global	prepare
+ 106               	prepare:
+ 107               	.LFB8:
+  17:robot.c       **** }
+  18:robot.c       **** 
+  19:robot.c       **** void prepare(uint8_t a,  uint8_t b, float* theta, float* phi, unsigned int N) {
+ 108               		.loc 1 19 0
+ 109               		.cfi_startproc
+ 110               	.LVL8:
+ 111 005e 2F92      		push r2
+ 112               	.LCFI0:
+ 113               		.cfi_def_cfa_offset 3
+ 114               		.cfi_offset 2, -2
+ 115 0060 3F92      		push r3
+ 116               	.LCFI1:
+ 117               		.cfi_def_cfa_offset 4
+ 118               		.cfi_offset 3, -3
+ 119 0062 4F92      		push r4
+ 120               	.LCFI2:
+ 121               		.cfi_def_cfa_offset 5
+ 122               		.cfi_offset 4, -4
+ 123 0064 5F92      		push r5
+ 124               	.LCFI3:
+ 125               		.cfi_def_cfa_offset 6
+ 126               		.cfi_offset 5, -5
+ 127 0066 6F92      		push r6
+ 128               	.LCFI4:
+ 129               		.cfi_def_cfa_offset 7
+ 130               		.cfi_offset 6, -6
+ 131 0068 7F92      		push r7
+ 132               	.LCFI5:
+ 133               		.cfi_def_cfa_offset 8
+ 134               		.cfi_offset 7, -7
+ 135 006a 8F92      		push r8
+ 136               	.LCFI6:
+ 137               		.cfi_def_cfa_offset 9
+ 138               		.cfi_offset 8, -8
+ 139 006c 9F92      		push r9
+ 140               	.LCFI7:
+ 141               		.cfi_def_cfa_offset 10
+ 142               		.cfi_offset 9, -9
+ 143 006e AF92      		push r10
+ 144               	.LCFI8:
+ 145               		.cfi_def_cfa_offset 11
+ 146               		.cfi_offset 10, -10
+ 147 0070 BF92      		push r11
+ 148               	.LCFI9:
+ 149               		.cfi_def_cfa_offset 12
+ 150               		.cfi_offset 11, -11
+ 151 0072 CF92      		push r12
+ 152               	.LCFI10:
+ 153               		.cfi_def_cfa_offset 13
+ 154               		.cfi_offset 12, -12
+ 155 0074 DF92      		push r13
+ 156               	.LCFI11:
+ 157               		.cfi_def_cfa_offset 14
+ 158               		.cfi_offset 13, -13
+ 159 0076 EF92      		push r14
+ 160               	.LCFI12:
+ 161               		.cfi_def_cfa_offset 15
+ 162               		.cfi_offset 14, -14
+ 163 0078 FF92      		push r15
+ 164               	.LCFI13:
+ 165               		.cfi_def_cfa_offset 16
+ 166               		.cfi_offset 15, -15
+ 167 007a 0F93      		push r16
+ 168               	.LCFI14:
+ 169               		.cfi_def_cfa_offset 17
+ 170               		.cfi_offset 16, -16
+ 171 007c 1F93      		push r17
+ 172               	.LCFI15:
+ 173               		.cfi_def_cfa_offset 18
+ 174               		.cfi_offset 17, -17
+ 175 007e CF93      		push r28
+ 176               	.LCFI16:
+ 177               		.cfi_def_cfa_offset 19
+ 178               		.cfi_offset 28, -18
+ 179 0080 DF93      		push r29
+ 180               	.LCFI17:
+ 181               		.cfi_def_cfa_offset 20
+ 182               		.cfi_offset 29, -19
+ 183 0082 CDB7      		in r28,__SP_L__
+ 184 0084 DEB7      		in r29,__SP_H__
+ 185               	.LCFI18:
+ 186               		.cfi_def_cfa_register 28
+ 187 0086 6097      		sbiw r28,16
+ 188               	.LCFI19:
+ 189               		.cfi_def_cfa_offset 36
+ 190 0088 0FB6      		in __tmp_reg__,__SREG__
+ 191 008a F894      		cli
+ 192 008c DEBF      		out __SP_H__,r29
+ 193 008e 0FBE      		out __SREG__,__tmp_reg__
+ 194 0090 CDBF      		out __SP_L__,r28
+ 195               	/* prologue: function */
+ 196               	/* frame size = 16 */
+ 197               	/* stack size = 34 */
+ 198               	.L__stack_usage = 34
+ 199               	.LVL9:
+ 200 0092 2983      		std Y+1,r18
+ 201 0094 3A83      		std Y+2,r19
+ 202 0096 4F87      		std Y+15,r20
+ 203 0098 588B      		std Y+16,r21
+ 204               	.LBB5:
+  20:robot.c       **** 	for(int t=0; t<N; t++) {
+ 205               		.loc 1 20 0
+ 206 009a 212C      		mov r2,__zero_reg__
+ 207 009c 312C      		mov r3,__zero_reg__
+ 208               	.LBB6:
+  21:robot.c       **** 		//elipsa
+  22:robot.c       **** 		float x = a * cos(2* M_PI*t/N)+a+DIST;
+ 209               		.loc 1 22 0
+ 210 009e 282F      		mov r18,r24
+ 211               	.LVL10:
+ 212 00a0 30E0      		ldi r19,0
+ 213 00a2 40E0      		ldi r20,0
+ 214 00a4 50E0      		ldi r21,0
+ 215               	.LVL11:
+ 216 00a6 2B83      		std Y+3,r18
+ 217 00a8 3C83      		std Y+4,r19
+ 218 00aa 4D83      		std Y+5,r20
+ 219 00ac 5E83      		std Y+6,r21
+ 220 00ae C801      		movw r24,r16
+ 221               	.LVL12:
+ 222 00b0 A0E0      		ldi r26,0
+ 223 00b2 B0E0      		ldi r27,0
+ 224 00b4 8F83      		std Y+7,r24
+ 225 00b6 9887      		std Y+8,r25
+ 226 00b8 A987      		std Y+9,r26
+ 227 00ba BA87      		std Y+10,r27
+  23:robot.c       **** 		float y = b * sin(2*M_PI*t/N);
+ 228               		.loc 1 23 0
+ 229 00bc 262F      		mov r18,r22
+ 230               	.LVL13:
+ 231 00be 30E0      		ldi r19,0
+ 232 00c0 40E0      		ldi r20,0
+ 233 00c2 50E0      		ldi r21,0
+ 234 00c4 2B87      		std Y+11,r18
+ 235 00c6 3C87      		std Y+12,r19
+ 236 00c8 4D87      		std Y+13,r20
+ 237 00ca 5E87      		std Y+14,r21
+ 238               	.LVL14:
+ 239               	.L7:
+ 240               	.LBE6:
+  20:robot.c       **** 	for(int t=0; t<N; t++) {
+ 241               		.loc 1 20 0 discriminator 1
+ 242 00cc 2016      		cp r2,r16
+ 243 00ce 3106      		cpc r3,r17
+ 244 00d0 01F4      		brne .+2
+ 245 00d2 00C0      		rjmp .L9
+ 246               	.LBB7:
+  22:robot.c       **** 		float y = b * sin(2*M_PI*t/N);
+ 247               		.loc 1 22 0 discriminator 3
+ 248 00d4 6B81      		ldd r22,Y+3
+ 249 00d6 7C81      		ldd r23,Y+4
+ 250 00d8 8D81      		ldd r24,Y+5
+ 251 00da 9E81      		ldd r25,Y+6
+ 252 00dc 0E94 0000 		call __floatsisf
+ 253               	.LVL15:
+ 254 00e0 4B01      		movw r8,r22
+ 255 00e2 5C01      		movw r10,r24
+ 256 00e4 B101      		movw r22,r2
+ 257 00e6 032C      		mov __tmp_reg__,r3
+ 258 00e8 000C      		lsl r0
+ 259 00ea 880B      		sbc r24,r24
+ 260 00ec 990B      		sbc r25,r25
+ 261 00ee 0E94 0000 		call __floatsisf
+ 262               	.LVL16:
+ 263 00f2 2BED      		ldi r18,lo8(-37)
+ 264 00f4 3FE0      		ldi r19,lo8(15)
+ 265 00f6 49EC      		ldi r20,lo8(-55)
+ 266 00f8 50E4      		ldi r21,lo8(64)
+ 267 00fa 0E94 0000 		call __mulsf3
+ 268               	.LVL17:
+ 269 00fe 6B01      		movw r12,r22
+ 270 0100 7C01      		movw r14,r24
+ 271 0102 6F81      		ldd r22,Y+7
+ 272 0104 7885      		ldd r23,Y+8
+ 273 0106 8985      		ldd r24,Y+9
+ 274 0108 9A85      		ldd r25,Y+10
+ 275 010a 0E94 0000 		call __floatunsisf
+ 276               	.LVL18:
+ 277 010e 9B01      		movw r18,r22
+ 278 0110 AC01      		movw r20,r24
+ 279 0112 C701      		movw r24,r14
+ 280 0114 B601      		movw r22,r12
+ 281 0116 0E94 0000 		call __divsf3
+ 282               	.LVL19:
+ 283 011a 6B01      		movw r12,r22
+ 284 011c 7C01      		movw r14,r24
+ 285 011e 0E94 0000 		call cos
+ 286               	.LVL20:
+ 287 0122 9B01      		movw r18,r22
+ 288 0124 AC01      		movw r20,r24
+ 289 0126 C501      		movw r24,r10
+ 290 0128 B401      		movw r22,r8
+ 291 012a 0E94 0000 		call __mulsf3
+ 292               	.LVL21:
+ 293 012e A501      		movw r20,r10
+ 294 0130 9401      		movw r18,r8
+ 295 0132 0E94 0000 		call __addsf3
+ 296               	.LVL22:
+ 297 0136 20E0      		ldi r18,0
+ 298 0138 30E0      		ldi r19,0
+ 299 013a 40EE      		ldi r20,lo8(-32)
+ 300 013c 50E4      		ldi r21,lo8(64)
+ 301 013e 0E94 0000 		call __addsf3
+ 302               	.LVL23:
+ 303 0142 4B01      		movw r8,r22
+ 304 0144 5C01      		movw r10,r24
+ 305               	.LVL24:
+ 306               		.loc 1 23 0 discriminator 3
+ 307 0146 C701      		movw r24,r14
+ 308 0148 B601      		movw r22,r12
+ 309 014a 0E94 0000 		call sin
+ 310               	.LVL25:
+ 311 014e 6B01      		movw r12,r22
+ 312 0150 7C01      		movw r14,r24
+ 313 0152 6B85      		ldd r22,Y+11
+ 314 0154 7C85      		ldd r23,Y+12
+ 315 0156 8D85      		ldd r24,Y+13
+ 316 0158 9E85      		ldd r25,Y+14
+ 317 015a 0E94 0000 		call __floatsisf
+ 318               	.LVL26:
+ 319 015e A701      		movw r20,r14
+ 320 0160 9601      		movw r18,r12
+ 321 0162 0E94 0000 		call __mulsf3
+ 322               	.LVL27:
+ 323 0166 6B01      		movw r12,r22
+ 324 0168 7C01      		movw r14,r24
+ 325               	.LVL28:
+  24:robot.c       **** 		
+  25:robot.c       **** 		//uklad biegunowy
+  26:robot.c       **** 		float rho = sqrt(x*x+y*y);
+ 326               		.loc 1 26 0 discriminator 3
+ 327 016a A501      		movw r20,r10
+ 328 016c 9401      		movw r18,r8
+ 329 016e C501      		movw r24,r10
+ 330 0170 B401      		movw r22,r8
+ 331 0172 0E94 0000 		call __mulsf3
+ 332               	.LVL29:
+ 333 0176 2B01      		movw r4,r22
+ 334 0178 3C01      		movw r6,r24
+ 335 017a A701      		movw r20,r14
+ 336 017c 9601      		movw r18,r12
+ 337 017e C701      		movw r24,r14
+ 338 0180 B601      		movw r22,r12
+ 339 0182 0E94 0000 		call __mulsf3
+ 340               	.LVL30:
+ 341 0186 9B01      		movw r18,r22
+ 342 0188 AC01      		movw r20,r24
+ 343 018a C301      		movw r24,r6
+ 344 018c B201      		movw r22,r4
+ 345 018e 0E94 0000 		call __addsf3
+ 346               	.LVL31:
+ 347 0192 0E94 0000 		call sqrt
+ 348               	.LVL32:
+ 349 0196 2B01      		movw r4,r22
+ 350 0198 3C01      		movw r6,r24
+ 351               	.LVL33:
+  27:robot.c       **** 		float alpha = atan(y/x);
+ 352               		.loc 1 27 0 discriminator 3
+ 353 019a A501      		movw r20,r10
+ 354 019c 9401      		movw r18,r8
+ 355 019e C701      		movw r24,r14
+ 356 01a0 B601      		movw r22,r12
+ 357 01a2 0E94 0000 		call __divsf3
+ 358               	.LVL34:
+ 359 01a6 0E94 0000 		call atan
+ 360               	.LVL35:
+ 361 01aa 6B01      		movw r12,r22
+ 362 01ac 7C01      		movw r14,r24
+ 363               	.LVL36:
+  28:robot.c       **** 		
+  29:robot.c       **** 		//na kąty ramienia
+  30:robot.c       **** 		phi[t] = acos(rho*rho/2/L/L - 1);
+ 364               		.loc 1 30 0 discriminator 3
+ 365 01ae A301      		movw r20,r6
+ 366 01b0 9201      		movw r18,r4
+ 367 01b2 C301      		movw r24,r6
+ 368 01b4 B201      		movw r22,r4
+ 369 01b6 0E94 0000 		call __mulsf3
+ 370               	.LVL37:
+ 371 01ba 20E0      		ldi r18,0
+ 372 01bc 30E0      		ldi r19,0
+ 373 01be 40E0      		ldi r20,0
+ 374 01c0 5FE3      		ldi r21,lo8(63)
+ 375 01c2 0E94 0000 		call __mulsf3
+ 376               	.LVL38:
+ 377 01c6 20E0      		ldi r18,0
+ 378 01c8 30E0      		ldi r19,0
+ 379 01ca 40E1      		ldi r20,lo8(16)
+ 380 01cc 51E4      		ldi r21,lo8(65)
+ 381 01ce 0E94 0000 		call __divsf3
+ 382               	.LVL39:
+ 383 01d2 20E0      		ldi r18,0
+ 384 01d4 30E0      		ldi r19,0
+ 385 01d6 40E1      		ldi r20,lo8(16)
+ 386 01d8 51E4      		ldi r21,lo8(65)
+ 387 01da 0E94 0000 		call __divsf3
+ 388               	.LVL40:
+ 389 01de 20E0      		ldi r18,0
+ 390 01e0 30E0      		ldi r19,0
+ 391 01e2 40E8      		ldi r20,lo8(-128)
+ 392 01e4 5FE3      		ldi r21,lo8(63)
+ 393 01e6 0E94 0000 		call __subsf3
+ 394               	.LVL41:
+ 395 01ea 0E94 0000 		call acos
+ 396               	.LVL42:
+ 397 01ee A981      		ldd r26,Y+1
+ 398 01f0 BA81      		ldd r27,Y+2
+ 399 01f2 6D93      		st X+,r22
+ 400 01f4 7D93      		st X+,r23
+ 401 01f6 8D93      		st X+,r24
+ 402 01f8 9C93      		st X,r25
+ 403 01fa 1397      		sbiw r26,3
+  31:robot.c       **** 		theta[t] = phi[t]/2 - alpha;
+ 404               		.loc 1 31 0 discriminator 3
+ 405 01fc 20E0      		ldi r18,0
+ 406 01fe 30E0      		ldi r19,0
+ 407 0200 40E0      		ldi r20,0
+ 408 0202 5FE3      		ldi r21,lo8(63)
+ 409 0204 0E94 0000 		call __mulsf3
+ 410               	.LVL43:
+ 411 0208 A701      		movw r20,r14
+ 412 020a 9601      		movw r18,r12
+ 413 020c 0E94 0000 		call __subsf3
+ 414               	.LVL44:
+ 415 0210 EF85      		ldd r30,Y+15
+ 416 0212 F889      		ldd r31,Y+16
+ 417 0214 6083      		st Z,r22
+ 418 0216 7183      		std Z+1,r23
+ 419 0218 8283      		std Z+2,r24
+ 420 021a 9383      		std Z+3,r25
+  32:robot.c       **** 		
+  33:robot.c       **** 		//rad do deg
+  34:robot.c       **** 		phi[t] = 180 * phi[t] / M_PI;
+ 421               		.loc 1 34 0 discriminator 3
+ 422 021c 20E0      		ldi r18,0
+ 423 021e 30E0      		ldi r19,0
+ 424 0220 44E3      		ldi r20,lo8(52)
+ 425 0222 53E4      		ldi r21,lo8(67)
+ 426 0224 A981      		ldd r26,Y+1
+ 427 0226 BA81      		ldd r27,Y+2
+ 428 0228 6D91      		ld r22,X+
+ 429 022a 7D91      		ld r23,X+
+ 430 022c 8D91      		ld r24,X+
+ 431 022e 9C91      		ld r25,X
+ 432 0230 0E94 0000 		call __mulsf3
+ 433               	.LVL45:
+ 434 0234 2BED      		ldi r18,lo8(-37)
+ 435 0236 3FE0      		ldi r19,lo8(15)
+ 436 0238 49E4      		ldi r20,lo8(73)
+ 437 023a 50E4      		ldi r21,lo8(64)
+ 438 023c 0E94 0000 		call __divsf3
+ 439               	.LVL46:
+ 440 0240 E981      		ldd r30,Y+1
+ 441 0242 FA81      		ldd r31,Y+2
+ 442 0244 6193      		st Z+,r22
+ 443 0246 7193      		st Z+,r23
+ 444 0248 8193      		st Z+,r24
+ 445 024a 9193      		st Z+,r25
+ 446 024c FA83      		std Y+2,r31
+ 447 024e E983      		std Y+1,r30
+  35:robot.c       **** 		theta[t] = 180 * theta[t] / M_PI;
+ 448               		.loc 1 35 0 discriminator 3
+ 449 0250 20E0      		ldi r18,0
+ 450 0252 30E0      		ldi r19,0
+ 451 0254 44E3      		ldi r20,lo8(52)
+ 452 0256 53E4      		ldi r21,lo8(67)
+ 453 0258 AF85      		ldd r26,Y+15
+ 454 025a B889      		ldd r27,Y+16
+ 455 025c 6D91      		ld r22,X+
+ 456 025e 7D91      		ld r23,X+
+ 457 0260 8D91      		ld r24,X+
+ 458 0262 9C91      		ld r25,X
+ 459 0264 0E94 0000 		call __mulsf3
+ 460               	.LVL47:
+ 461 0268 2BED      		ldi r18,lo8(-37)
+ 462 026a 3FE0      		ldi r19,lo8(15)
+ 463 026c 49E4      		ldi r20,lo8(73)
+ 464 026e 50E4      		ldi r21,lo8(64)
+ 465 0270 0E94 0000 		call __divsf3
+ 466               	.LVL48:
+ 467 0274 EF85      		ldd r30,Y+15
+ 468 0276 F889      		ldd r31,Y+16
+ 469 0278 6193      		st Z+,r22
+ 470 027a 7193      		st Z+,r23
+ 471 027c 8193      		st Z+,r24
+ 472 027e 9193      		st Z+,r25
+ 473 0280 F88B      		std Y+16,r31
+ 474 0282 EF87      		std Y+15,r30
+ 475               	.LBE7:
+  20:robot.c       **** 		//elipsa
+ 476               		.loc 1 20 0 discriminator 3
+ 477 0284 FFEF      		ldi r31,-1
+ 478 0286 2F1A      		sub r2,r31
+ 479 0288 3F0A      		sbc r3,r31
+ 480               	.LVL49:
+ 481 028a 00C0      		rjmp .L7
+ 482               	.LVL50:
+ 483               	.L9:
+ 484               	/* epilogue start */
+ 485               	.LBE5:
+  36:robot.c       **** 	}
+  37:robot.c       **** }
+ 486               		.loc 1 37 0
+ 487 028c 6096      		adiw r28,16
+ 488 028e 0FB6      		in __tmp_reg__,__SREG__
+ 489 0290 F894      		cli
+ 490 0292 DEBF      		out __SP_H__,r29
+ 491 0294 0FBE      		out __SREG__,__tmp_reg__
+ 492 0296 CDBF      		out __SP_L__,r28
+ 493 0298 DF91      		pop r29
+ 494 029a CF91      		pop r28
+ 495 029c 1F91      		pop r17
+ 496 029e 0F91      		pop r16
+ 497               	.LVL51:
+ 498 02a0 FF90      		pop r15
+ 499 02a2 EF90      		pop r14
+ 500 02a4 DF90      		pop r13
+ 501 02a6 CF90      		pop r12
+ 502 02a8 BF90      		pop r11
+ 503 02aa AF90      		pop r10
+ 504 02ac 9F90      		pop r9
+ 505 02ae 8F90      		pop r8
+ 506 02b0 7F90      		pop r7
+ 507 02b2 6F90      		pop r6
+ 508 02b4 5F90      		pop r5
+ 509 02b6 4F90      		pop r4
+ 510 02b8 3F90      		pop r3
+ 511 02ba 2F90      		pop r2
+ 512               	.LVL52:
+ 513 02bc 0895      		ret
+ 514               		.cfi_endproc
+ 515               	.LFE8:
+ 517               	.global	__fixsfsi
+ 518               	.global	draw
+ 520               	draw:
+ 521               	.LFB9:
+  38:robot.c       **** 
+  39:robot.c       **** void draw(float* theta, float* phi, int N) {
+ 522               		.loc 1 39 0
+ 523               		.cfi_startproc
+ 524               	.LVL53:
+ 525 02be CF92      		push r12
+ 526               	.LCFI20:
+ 527               		.cfi_def_cfa_offset 3
+ 528               		.cfi_offset 12, -2
+ 529 02c0 DF92      		push r13
+ 530               	.LCFI21:
+ 531               		.cfi_def_cfa_offset 4
+ 532               		.cfi_offset 13, -3
+ 533 02c2 EF92      		push r14
+ 534               	.LCFI22:
+ 535               		.cfi_def_cfa_offset 5
+ 536               		.cfi_offset 14, -4
+ 537 02c4 FF92      		push r15
+ 538               	.LCFI23:
+ 539               		.cfi_def_cfa_offset 6
+ 540               		.cfi_offset 15, -5
+ 541 02c6 0F93      		push r16
+ 542               	.LCFI24:
+ 543               		.cfi_def_cfa_offset 7
+ 544               		.cfi_offset 16, -6
+ 545 02c8 1F93      		push r17
+ 546               	.LCFI25:
+ 547               		.cfi_def_cfa_offset 8
+ 548               		.cfi_offset 17, -7
+ 549 02ca CF93      		push r28
+ 550               	.LCFI26:
+ 551               		.cfi_def_cfa_offset 9
+ 552               		.cfi_offset 28, -8
+ 553 02cc DF93      		push r29
+ 554               	.LCFI27:
+ 555               		.cfi_def_cfa_offset 10
+ 556               		.cfi_offset 29, -9
+ 557               	/* prologue: function */
+ 558               	/* frame size = 0 */
+ 559               	/* stack size = 8 */
+ 560               	.L__stack_usage = 8
+ 561 02ce 6A01      		movw r12,r20
+ 562               	.LVL54:
+ 563 02d0 7C01      		movw r14,r24
+ 564 02d2 EB01      		movw r28,r22
+ 565               	.LBB8:
+  40:robot.c       **** 	
+  41:robot.c       **** 	for(int i=0; i<N; i++) {
+ 566               		.loc 1 41 0
+ 567 02d4 00E0      		ldi r16,0
+ 568 02d6 10E0      		ldi r17,0
+ 569               	.LVL55:
+ 570               	.L11:
+ 571               		.loc 1 41 0 is_stmt 0 discriminator 1
+ 572 02d8 0C15      		cp r16,r12
+ 573 02da 1D05      		cpc r17,r13
+ 574 02dc 04F4      		brge .L13
+  42:robot.c       **** 		setBigServo(theta[i]);
+ 575               		.loc 1 42 0 is_stmt 1 discriminator 3
+ 576 02de F701      		movw r30,r14
+ 577 02e0 6191      		ld r22,Z+
+ 578 02e2 7191      		ld r23,Z+
+ 579 02e4 8191      		ld r24,Z+
+ 580 02e6 9191      		ld r25,Z+
+ 581 02e8 7F01      		movw r14,r30
+ 582 02ea 0E94 0000 		call __fixsfsi
+ 583               	.LVL56:
+ 584 02ee CB01      		movw r24,r22
+ 585 02f0 0E94 0000 		call setBigServo
+ 586               	.LVL57:
+  43:robot.c       **** 		setSmallServo(phi[i]);
+ 587               		.loc 1 43 0 discriminator 3
+ 588 02f4 6991      		ld r22,Y+
+ 589 02f6 7991      		ld r23,Y+
+ 590 02f8 8991      		ld r24,Y+
+ 591 02fa 9991      		ld r25,Y+
+ 592 02fc 0E94 0000 		call __fixsfsi
+ 593               	.LVL58:
+ 594 0300 CB01      		movw r24,r22
+ 595 0302 0E94 0000 		call setSmallServo
+ 596               	.LVL59:
+ 597               	.LBB9:
+ 598               	.LBB10:
+ 599               		.file 2 "/usr/lib/avr/include/util/delay.h"
+   1:/usr/lib/avr/include/util/delay.h **** /* Copyright (c) 2002, Marek Michalkiewicz
+   2:/usr/lib/avr/include/util/delay.h ****    Copyright (c) 2004,2005,2007 Joerg Wunsch
+   3:/usr/lib/avr/include/util/delay.h ****    Copyright (c) 2007  Florin-Viorel Petrov
+   4:/usr/lib/avr/include/util/delay.h ****    All rights reserved.
+   5:/usr/lib/avr/include/util/delay.h **** 
+   6:/usr/lib/avr/include/util/delay.h ****    Redistribution and use in source and binary forms, with or without
+   7:/usr/lib/avr/include/util/delay.h ****    modification, are permitted provided that the following conditions are met:
+   8:/usr/lib/avr/include/util/delay.h **** 
+   9:/usr/lib/avr/include/util/delay.h ****    * Redistributions of source code must retain the above copyright
+  10:/usr/lib/avr/include/util/delay.h ****      notice, this list of conditions and the following disclaimer.
+  11:/usr/lib/avr/include/util/delay.h **** 
+  12:/usr/lib/avr/include/util/delay.h ****    * Redistributions in binary form must reproduce the above copyright
+  13:/usr/lib/avr/include/util/delay.h ****      notice, this list of conditions and the following disclaimer in
+  14:/usr/lib/avr/include/util/delay.h ****      the documentation and/or other materials provided with the
+  15:/usr/lib/avr/include/util/delay.h ****      distribution.
+  16:/usr/lib/avr/include/util/delay.h **** 
+  17:/usr/lib/avr/include/util/delay.h ****    * Neither the name of the copyright holders nor the names of
+  18:/usr/lib/avr/include/util/delay.h ****      contributors may be used to endorse or promote products derived
+  19:/usr/lib/avr/include/util/delay.h ****      from this software without specific prior written permission.
+  20:/usr/lib/avr/include/util/delay.h **** 
+  21:/usr/lib/avr/include/util/delay.h ****   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  22:/usr/lib/avr/include/util/delay.h ****   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  23:/usr/lib/avr/include/util/delay.h ****   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  24:/usr/lib/avr/include/util/delay.h ****   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+  25:/usr/lib/avr/include/util/delay.h ****   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  26:/usr/lib/avr/include/util/delay.h ****   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  27:/usr/lib/avr/include/util/delay.h ****   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  28:/usr/lib/avr/include/util/delay.h ****   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  29:/usr/lib/avr/include/util/delay.h ****   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  30:/usr/lib/avr/include/util/delay.h ****   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  31:/usr/lib/avr/include/util/delay.h ****   POSSIBILITY OF SUCH DAMAGE. */
+  32:/usr/lib/avr/include/util/delay.h **** 
+  33:/usr/lib/avr/include/util/delay.h **** /* $Id$ */
+  34:/usr/lib/avr/include/util/delay.h **** 
+  35:/usr/lib/avr/include/util/delay.h **** #ifndef _UTIL_DELAY_H_
+  36:/usr/lib/avr/include/util/delay.h **** #define _UTIL_DELAY_H_ 1
+  37:/usr/lib/avr/include/util/delay.h **** 
+  38:/usr/lib/avr/include/util/delay.h **** #ifndef __DOXYGEN__
+  39:/usr/lib/avr/include/util/delay.h **** #  ifndef __HAS_DELAY_CYCLES
+  40:/usr/lib/avr/include/util/delay.h **** #    define __HAS_DELAY_CYCLES 1
+  41:/usr/lib/avr/include/util/delay.h **** #  endif
+  42:/usr/lib/avr/include/util/delay.h **** #endif  /* __DOXYGEN__ */
+  43:/usr/lib/avr/include/util/delay.h **** 
+  44:/usr/lib/avr/include/util/delay.h **** #include <inttypes.h>
+  45:/usr/lib/avr/include/util/delay.h **** #include <util/delay_basic.h>
+  46:/usr/lib/avr/include/util/delay.h **** #include <math.h>
+  47:/usr/lib/avr/include/util/delay.h **** 
+  48:/usr/lib/avr/include/util/delay.h **** /** \file */
+  49:/usr/lib/avr/include/util/delay.h **** /** \defgroup util_delay <util/delay.h>: Convenience functions for busy-wait delay loops
+  50:/usr/lib/avr/include/util/delay.h ****     \code
+  51:/usr/lib/avr/include/util/delay.h ****     #define F_CPU 1000000UL  // 1 MHz
+  52:/usr/lib/avr/include/util/delay.h ****     //#define F_CPU 14.7456E6
+  53:/usr/lib/avr/include/util/delay.h ****     #include <util/delay.h>
+  54:/usr/lib/avr/include/util/delay.h ****     \endcode
+  55:/usr/lib/avr/include/util/delay.h **** 
+  56:/usr/lib/avr/include/util/delay.h ****     \note As an alternative method, it is possible to pass the
+  57:/usr/lib/avr/include/util/delay.h ****     F_CPU macro down to the compiler from the Makefile.
+  58:/usr/lib/avr/include/util/delay.h ****     Obviously, in that case, no \c \#define statement should be
+  59:/usr/lib/avr/include/util/delay.h ****     used.
+  60:/usr/lib/avr/include/util/delay.h **** 
+  61:/usr/lib/avr/include/util/delay.h ****     The functions in this header file are wrappers around the basic
+  62:/usr/lib/avr/include/util/delay.h ****     busy-wait functions from <util/delay_basic.h>.  They are meant as
+  63:/usr/lib/avr/include/util/delay.h ****     convenience functions where actual time values can be specified
+  64:/usr/lib/avr/include/util/delay.h ****     rather than a number of cycles to wait for.  The idea behind is
+  65:/usr/lib/avr/include/util/delay.h ****     that compile-time constant expressions will be eliminated by
+  66:/usr/lib/avr/include/util/delay.h ****     compiler optimization so floating-point expressions can be used
+  67:/usr/lib/avr/include/util/delay.h ****     to calculate the number of delay cycles needed based on the CPU
+  68:/usr/lib/avr/include/util/delay.h ****     frequency passed by the macro F_CPU.
+  69:/usr/lib/avr/include/util/delay.h **** 
+  70:/usr/lib/avr/include/util/delay.h ****     \note In order for these functions to work as intended, compiler
+  71:/usr/lib/avr/include/util/delay.h ****     optimizations <em>must</em> be enabled, and the delay time
+  72:/usr/lib/avr/include/util/delay.h ****     <em>must</em> be an expression that is a known constant at
+  73:/usr/lib/avr/include/util/delay.h ****     compile-time.  If these requirements are not met, the resulting
+  74:/usr/lib/avr/include/util/delay.h ****     delay will be much longer (and basically unpredictable), and
+  75:/usr/lib/avr/include/util/delay.h ****     applications that otherwise do not use floating-point calculations
+  76:/usr/lib/avr/include/util/delay.h ****     will experience severe code bloat by the floating-point library
+  77:/usr/lib/avr/include/util/delay.h ****     routines linked into the application.
+  78:/usr/lib/avr/include/util/delay.h **** 
+  79:/usr/lib/avr/include/util/delay.h ****     The functions available allow the specification of microsecond, and
+  80:/usr/lib/avr/include/util/delay.h ****     millisecond delays directly, using the application-supplied macro
+  81:/usr/lib/avr/include/util/delay.h ****     F_CPU as the CPU clock frequency (in Hertz).
+  82:/usr/lib/avr/include/util/delay.h **** 
+  83:/usr/lib/avr/include/util/delay.h **** */
+  84:/usr/lib/avr/include/util/delay.h **** 
+  85:/usr/lib/avr/include/util/delay.h **** #if !defined(__DOXYGEN__)
+  86:/usr/lib/avr/include/util/delay.h **** static __inline__ void _delay_us(double __us) __attribute__((__always_inline__));
+  87:/usr/lib/avr/include/util/delay.h **** static __inline__ void _delay_ms(double __ms) __attribute__((__always_inline__));
+  88:/usr/lib/avr/include/util/delay.h **** #endif
+  89:/usr/lib/avr/include/util/delay.h **** 
+  90:/usr/lib/avr/include/util/delay.h **** #ifndef F_CPU
+  91:/usr/lib/avr/include/util/delay.h **** /* prevent compiler error by supplying a default */
+  92:/usr/lib/avr/include/util/delay.h **** # warning "F_CPU not defined for <util/delay.h>"
+  93:/usr/lib/avr/include/util/delay.h **** /** \ingroup util_delay
+  94:/usr/lib/avr/include/util/delay.h ****     \def F_CPU
+  95:/usr/lib/avr/include/util/delay.h ****     \brief CPU frequency in Hz
+  96:/usr/lib/avr/include/util/delay.h **** 
+  97:/usr/lib/avr/include/util/delay.h ****     The macro F_CPU specifies the CPU frequency to be considered by
+  98:/usr/lib/avr/include/util/delay.h ****     the delay macros.  This macro is normally supplied by the
+  99:/usr/lib/avr/include/util/delay.h ****     environment (e.g. from within a project header, or the project's
+ 100:/usr/lib/avr/include/util/delay.h ****     Makefile).  The value 1 MHz here is only provided as a "vanilla"
+ 101:/usr/lib/avr/include/util/delay.h ****     fallback if no such user-provided definition could be found.
+ 102:/usr/lib/avr/include/util/delay.h **** 
+ 103:/usr/lib/avr/include/util/delay.h ****     In terms of the delay functions, the CPU frequency can be given as
+ 104:/usr/lib/avr/include/util/delay.h ****     a floating-point constant (e.g. 3.6864E6 for 3.6864 MHz).
+ 105:/usr/lib/avr/include/util/delay.h ****     However, the macros in <util/setbaud.h> require it to be an
+ 106:/usr/lib/avr/include/util/delay.h ****     integer value.
+ 107:/usr/lib/avr/include/util/delay.h ****  */
+ 108:/usr/lib/avr/include/util/delay.h **** # define F_CPU 1000000UL
+ 109:/usr/lib/avr/include/util/delay.h **** #endif
+ 110:/usr/lib/avr/include/util/delay.h **** 
+ 111:/usr/lib/avr/include/util/delay.h **** #ifndef __OPTIMIZE__
+ 112:/usr/lib/avr/include/util/delay.h **** # warning "Compiler optimizations disabled; functions from <util/delay.h> won't work as designed"
+ 113:/usr/lib/avr/include/util/delay.h **** #endif
+ 114:/usr/lib/avr/include/util/delay.h **** 
+ 115:/usr/lib/avr/include/util/delay.h **** #if __HAS_DELAY_CYCLES && defined(__OPTIMIZE__) && \
+ 116:/usr/lib/avr/include/util/delay.h ****   !defined(__DELAY_BACKWARD_COMPATIBLE__) &&	   \
+ 117:/usr/lib/avr/include/util/delay.h ****   __STDC_HOSTED__
+ 118:/usr/lib/avr/include/util/delay.h **** #  include <math.h>
+ 119:/usr/lib/avr/include/util/delay.h **** #endif
+ 120:/usr/lib/avr/include/util/delay.h **** 
+ 121:/usr/lib/avr/include/util/delay.h **** /**
+ 122:/usr/lib/avr/include/util/delay.h ****    \ingroup util_delay
+ 123:/usr/lib/avr/include/util/delay.h **** 
+ 124:/usr/lib/avr/include/util/delay.h ****    Perform a delay of \c __ms milliseconds, using _delay_loop_2().
+ 125:/usr/lib/avr/include/util/delay.h **** 
+ 126:/usr/lib/avr/include/util/delay.h ****    The macro F_CPU is supposed to be defined to a
+ 127:/usr/lib/avr/include/util/delay.h ****    constant defining the CPU clock frequency (in Hertz).
+ 128:/usr/lib/avr/include/util/delay.h **** 
+ 129:/usr/lib/avr/include/util/delay.h ****    The maximal possible delay is 262.14 ms / F_CPU in MHz.
+ 130:/usr/lib/avr/include/util/delay.h **** 
+ 131:/usr/lib/avr/include/util/delay.h ****    When the user request delay which exceed the maximum possible one,
+ 132:/usr/lib/avr/include/util/delay.h ****    _delay_ms() provides a decreased resolution functionality. In this
+ 133:/usr/lib/avr/include/util/delay.h ****    mode _delay_ms() will work with a resolution of 1/10 ms, providing
+ 134:/usr/lib/avr/include/util/delay.h ****    delays up to 6.5535 seconds (independent from CPU frequency).  The
+ 135:/usr/lib/avr/include/util/delay.h ****    user will not be informed about decreased resolution.
+ 136:/usr/lib/avr/include/util/delay.h **** 
+ 137:/usr/lib/avr/include/util/delay.h ****    If the avr-gcc toolchain has __builtin_avr_delay_cycles()
+ 138:/usr/lib/avr/include/util/delay.h ****    support, maximal possible delay is 4294967.295 ms/ F_CPU in MHz. For
+ 139:/usr/lib/avr/include/util/delay.h ****    values greater than the maximal possible delay, overflows results in
+ 140:/usr/lib/avr/include/util/delay.h ****    no delay i.e., 0ms.
+ 141:/usr/lib/avr/include/util/delay.h **** 
+ 142:/usr/lib/avr/include/util/delay.h ****    Conversion of \c __ms into clock cycles may not always result in
+ 143:/usr/lib/avr/include/util/delay.h ****    integer.  By default, the clock cycles rounded up to next
+ 144:/usr/lib/avr/include/util/delay.h ****    integer. This ensures that the user gets at least \c __ms
+ 145:/usr/lib/avr/include/util/delay.h ****    microseconds of delay.
+ 146:/usr/lib/avr/include/util/delay.h **** 
+ 147:/usr/lib/avr/include/util/delay.h ****    Alternatively, by defining the macro \c __DELAY_ROUND_DOWN__, or
+ 148:/usr/lib/avr/include/util/delay.h ****    \c __DELAY_ROUND_CLOSEST__, before including this header file, the
+ 149:/usr/lib/avr/include/util/delay.h ****    algorithm can be made to round down, or round to closest integer,
+ 150:/usr/lib/avr/include/util/delay.h ****    respectively.
+ 151:/usr/lib/avr/include/util/delay.h **** 
+ 152:/usr/lib/avr/include/util/delay.h ****    \note
+ 153:/usr/lib/avr/include/util/delay.h **** 
+ 154:/usr/lib/avr/include/util/delay.h ****    The implementation of _delay_ms() based on
+ 155:/usr/lib/avr/include/util/delay.h ****    __builtin_avr_delay_cycles() is not backward compatible with older
+ 156:/usr/lib/avr/include/util/delay.h ****    implementations.  In order to get functionality backward compatible
+ 157:/usr/lib/avr/include/util/delay.h ****    with previous versions, the macro \c "__DELAY_BACKWARD_COMPATIBLE__"
+ 158:/usr/lib/avr/include/util/delay.h ****    must be defined before including this header file. Also, the
+ 159:/usr/lib/avr/include/util/delay.h ****    backward compatible algorithm will be chosen if the code is
+ 160:/usr/lib/avr/include/util/delay.h ****    compiled in a <em>freestanding environment</em> (GCC option
+ 161:/usr/lib/avr/include/util/delay.h ****    \c -ffreestanding), as the math functions required for rounding are
+ 162:/usr/lib/avr/include/util/delay.h ****    not available to the compiler then.
+ 163:/usr/lib/avr/include/util/delay.h **** 
+ 164:/usr/lib/avr/include/util/delay.h ****  */
+ 165:/usr/lib/avr/include/util/delay.h **** void
+ 166:/usr/lib/avr/include/util/delay.h **** _delay_ms(double __ms)
+ 167:/usr/lib/avr/include/util/delay.h **** {
+ 168:/usr/lib/avr/include/util/delay.h **** 	double __tmp ;
+ 169:/usr/lib/avr/include/util/delay.h **** #if __HAS_DELAY_CYCLES && defined(__OPTIMIZE__) && \
+ 170:/usr/lib/avr/include/util/delay.h ****   !defined(__DELAY_BACKWARD_COMPATIBLE__) &&	   \
+ 171:/usr/lib/avr/include/util/delay.h ****   __STDC_HOSTED__
+ 172:/usr/lib/avr/include/util/delay.h **** 	uint32_t __ticks_dc;
+ 173:/usr/lib/avr/include/util/delay.h **** 	extern void __builtin_avr_delay_cycles(unsigned long);
+ 174:/usr/lib/avr/include/util/delay.h **** 	__tmp = ((F_CPU) / 1e3) * __ms;
+ 175:/usr/lib/avr/include/util/delay.h **** 
+ 176:/usr/lib/avr/include/util/delay.h **** 	#if defined(__DELAY_ROUND_DOWN__)
+ 177:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)fabs(__tmp);
+ 178:/usr/lib/avr/include/util/delay.h **** 
+ 179:/usr/lib/avr/include/util/delay.h **** 	#elif defined(__DELAY_ROUND_CLOSEST__)
+ 180:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)(fabs(__tmp)+0.5);
+ 181:/usr/lib/avr/include/util/delay.h **** 
+ 182:/usr/lib/avr/include/util/delay.h **** 	#else
+ 183:/usr/lib/avr/include/util/delay.h **** 		//round up by default
+ 184:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+ 185:/usr/lib/avr/include/util/delay.h **** 	#endif
+ 186:/usr/lib/avr/include/util/delay.h **** 
+ 187:/usr/lib/avr/include/util/delay.h **** 	__builtin_avr_delay_cycles(__ticks_dc);
+ 600               		.loc 2 187 0 discriminator 3
+ 601 0306 FFEF      		ldi r31,lo8(959999)
+ 602 0308 25EA      		ldi r18,hi8(959999)
+ 603 030a 8EE0      		ldi r24,hlo8(959999)
+ 604 030c F150      	1:	subi r31,1
+ 605 030e 2040      		sbci r18,0
+ 606 0310 8040      		sbci r24,0
+ 607 0312 01F4      		brne 1b
+ 608 0314 00C0      		rjmp .
+ 609 0316 0000      		nop
+ 610               	.LVL60:
+ 611               	.LBE10:
+ 612               	.LBE9:
+  41:robot.c       **** 		setBigServo(theta[i]);
+ 613               		.loc 1 41 0 discriminator 3
+ 614 0318 0F5F      		subi r16,-1
+ 615 031a 1F4F      		sbci r17,-1
+ 616               	.LVL61:
+ 617 031c 00C0      		rjmp .L11
+ 618               	.L13:
+ 619               	/* epilogue start */
+ 620               	.LBE8:
+  44:robot.c       **** 		_delay_ms(300);
+  45:robot.c       **** 	}
+  46:robot.c       **** 	
+  47:robot.c       **** }
+ 621               		.loc 1 47 0
+ 622 031e DF91      		pop r29
+ 623 0320 CF91      		pop r28
+ 624 0322 1F91      		pop r17
+ 625 0324 0F91      		pop r16
+ 626               	.LVL62:
+ 627 0326 FF90      		pop r15
+ 628 0328 EF90      		pop r14
+ 629 032a DF90      		pop r13
+ 630 032c CF90      		pop r12
+ 631               	.LVL63:
+ 632 032e 0895      		ret
+ 633               		.cfi_endproc
+ 634               	.LFE9:
+ 636               	.Letext0:
+ 637               		.file 3 "/usr/lib/avr/include/stdint.h"
+ 638               		.file 4 "/usr/lib/avr/include/math.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 robot.c
+     /tmp/ccB8j0Is.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccB8j0Is.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccB8j0Is.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccB8j0Is.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccB8j0Is.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccB8j0Is.s:12     .text:0000000000000000 setSmallServo
+     /tmp/ccB8j0Is.s:57     .text:0000000000000030 setBigServo
+     /tmp/ccB8j0Is.s:106    .text:000000000000005e prepare
+     /tmp/ccB8j0Is.s:520    .text:00000000000002be draw
+
+UNDEFINED SYMBOLS
+__divmodhi4
+__floatsisf
+__mulsf3
+__floatunsisf
+__divsf3
+__addsf3
+__subsf3
+cos
+sin
+sqrt
+atan
+acos
+__fixsfsi
